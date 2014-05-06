@@ -127,6 +127,6 @@ if (isset($_POST['show_source']) && isset($this->aValidator)): ?>
 <?php endif; // show source
  */ ?>
 
-        <div class="center">Per una verifica completa occorre anche validare codice <a href="http://validator.w3.org/<?php echo ($_POST['uri']) ? 'check?uri='.$_POST['uri']:'';?>">HTML</a> e <a href="http://jigsaw.w3.org/css-validator/<?php echo ($_POST['uri']) ? 'check?uri='.$_POST['uri']:'';?>">CSS</a></div>
+        <div class="center">Per una verifica completa occorre anche validare codice <a href="http://validator.w3.org/<?php echo ($_POST['uri']) ? 'check?uri='.$_POST['uri']:'';?>">HTML</a> e <a href="http://jigsaw.w3.org/css-validator/<?php echo ($_POST['uri']) ? 'validator?uri='.$_POST['uri']:'';?>">CSS</a></div>
     </div>
 </div>
