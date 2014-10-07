@@ -52,3 +52,6 @@ $_pages = array(
         'parent'=>AC_NAV_TOP,
     ),
 );
+
+// Limit of HTML paste input size: 200KB
+define('AC_VALIDATION_MAX_SIZE', 200*1024);
