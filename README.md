@@ -1,5 +1,4 @@
-VaMoLà
-======
+# VaMoLà
 
 Validatore e Monitor per l'accessibilità
 
@@ -17,24 +16,25 @@ So, using Vamola you get all the <a href="https://github.com/atutor/AChecker" ti
 * Original Vamolà HTML5 accessible theme using jQuery UI (v. 1.8.7)
 
 
-Download
-====
+## Download
+
 Please, fetch [latest stable version 2.0.1](https://github.com/RegioneER/Vamola/archive/v2.0.1.zip)
 
-Installation
-====
+## Installation
 
  1. Unzip latest stable release (or clone the master branch if you plan to contrib to this repository)
  2. Load inside your database entire the dump file database.sql.bz2
  3. Modify include/config.inc.php to match your SQL credentials parameters and temp directory
  4. Serve using Apache, enjoy :smile:
 
-Support
-====
+## Documentation
+
+Documentation is helded inside this project's wiki pages
+
+## Support
 
 Getting support is easy as filing issues
 
-Contribute
-====
+## Contribute
 
 You can fork this project and contribute by sending pull requests as you want
