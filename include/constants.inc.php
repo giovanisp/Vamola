@@ -17,10 +17,10 @@ if (!defined('AC_INCLUDE_PATH')) { exit; }
  * constants, some more constants are loaded from table 'config' @ include/vitals.inc.php
  **/
 
-define('VERSION',	'1.4');
+define('VERSION',	'2.0.1');
 
 // language constants
-define('DEFAULT_LANGUAGE_CODE', 'eng');
+define('DEFAULT_LANGUAGE_CODE', 'ita');
 define('DEFAULT_CHARSET', 'utf-8');
 define('AC_LANGUAGE_LOCALE_SEP', '-');
 //$_config['default_language'] = DEFAULT_LANGUAGE_CODE;
@@ -120,7 +120,9 @@ define('AC_NO_DECISION', 'N');
 define('DEFAULT_WEB_SERVICE_OUTPUT', 'html');
 
 // default guideline to validate against
-define('DEFAULT_GUIDELINE', 10);
+if (!defined('DEFAULT_GUIDELINE')) {
+    define('DEFAULT_GUIDELINE', 10);
+}
 
 // report formats
 define('REPORT_FORMAT_GUIDELINE', 1);
@@ -183,4 +185,6 @@ define('AC_GUIDES_PATH', $_base_path . 'documentation/');
 /* relative uri */
 $_rel_url = '/'.implode('/', array_slice($url_parts, count($url_parts) - $dir_deep-1));
 
-?>
+if (!defined('AC_VALIDATION_MAX_SIZE')) {
+    define('AC_VALIDATION_MAX_SIZE', 128*1024);
+}

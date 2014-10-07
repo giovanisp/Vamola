@@ -17,7 +17,7 @@
 define('DB_USER',                      'root');
 
 /* the database password                                                */
-define('DB_PASSWORD',                  '');
+define('DB_PASSWORD',                  'dev');
 
 /* the database host                                                    */
 define('DB_HOST',                      'localhost');
@@ -26,7 +26,7 @@ define('DB_HOST',                      'localhost');
 define('DB_PORT',                      '3306');
 
 /* the database name                                                    */
-define('DB_NAME',                      '');
+define('DB_NAME',                      'VamolaValidator');
 
 /* The prefix to add to table names to avoid conflicts with existing    */
 /* tables. Default: AC_                                                 */
@@ -41,6 +41,7 @@ define('AC_TEMP_DIR', '/tmp/');
 /* DO NOT ALTER THIS LAST LINE                                          */
 define('AC_INSTALL', TRUE);
 
+/* CMS Pages, feel free to add/modify files in {root}/pages/ directory  */
 $_pages = array(
     'page/credits.php' => array(
         'title_var' => 'credits',
@@ -51,3 +52,6 @@ $_pages = array(
         'parent'=>AC_NAV_TOP,
     ),
 );
+
+// Limit of HTML paste input size: 200KB
+define('AC_VALIDATION_MAX_SIZE', 200*1024);
