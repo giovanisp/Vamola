@@ -148,10 +148,10 @@ define('SITE_NAME',                 $_config['site_name']);
 /***** end load common libraries ****/
 
 /***** 7. initialize theme and template management *****/
-	require(AC_INCLUDE_PATH.'classes/Savant2/Savant2.php');
+	require(AC_INCLUDE_PATH.'lib/Savant3.php');
 
 	// set default template paths:
-	$savant = new Savant2();
+	$savant = new Savant3();
 
 	if (isset($_SESSION['prefs']['PREF_THEME']) && file_exists(AC_INCLUDE_PATH . '../themes/' . $_SESSION['prefs']['PREF_THEME']) && isset($_SESSION['valid_user']) && $_SESSION['valid_user']) 
 	{
