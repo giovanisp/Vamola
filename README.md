@@ -38,3 +38,10 @@ Getting support is easy as filing issues
 ## Contribute
 
 You can fork this project and contribute by sending pull requests as you want
+
+## Changelog
+
+ - 2.0.5 Old Vamolà distribution, stills [available on SourceForge](http://sourceforge.net/projects/vamola-validate/)
+ - 2.1.0 Current Vamolà distribution on Github, based on AChecker 1.4
+ - 2.1.1 Feature added: Security enchancements by nonce submission and validation limit to avoid memory leaks.
+ - 2.1.2 Template engine updated to Savant3
