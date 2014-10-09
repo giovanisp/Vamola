@@ -2,7 +2,7 @@
 
 require_once(AC_INCLUDE_PATH . 'classes/DAO/DAO.class.php');
 require_once(AC_INCLUDE_PATH . 'classes/DAO/GuidelineGroupsDAO.class.php');
-require_once(AC_INCLUDE_PATH . 'classes/Savant2/Savant2.php');
+require_once(AC_INCLUDE_PATH . 'lib/Savant3.php');
 
 class tableSummary
 {
@@ -21,7 +21,7 @@ class tableSummary
     {
         $this->DAO = new DAO;
         $this->GuidelineGroupsDAO = new GuidelineGroupsDAO;
-        $this->template = new Savant2(array('template_path' => __DIR__ . '/../../checker'));
+        $this->template = new Savant3(array('template_path' => __DIR__ . '/../../checker'));
 
 // Se le guideline sono Stanca/Allegato A, allora abbiamo: Requisiti
         if (in_array($guideline_id, array(3,10)))
