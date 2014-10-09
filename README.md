@@ -45,3 +45,4 @@ You can fork this project and contribute by sending pull requests as you want
  - 2.1.0 Current Vamolà distribution on Github, based on AChecker 1.4
  - 2.1.1 Feature added: Security enchancements by nonce submission and validation limit to avoid memory leaks.
  - 2.1.2 Template engine updated to Savant3
+ - 2.1.3 Adding tweet button
