@@ -18,7 +18,7 @@ So, using Vamola you get all the <a href="https://github.com/atutor/AChecker" ti
 
 ## Download
 
-Please, fetch [latest stable version 2.0.1](https://github.com/RegioneER/Vamola/archive/v2.0.1.zip)
+Please, fetch [latest stable version 2.1.3](https://github.com/RegioneER/Vamola/archive/v2.1.3.zip)
 
 ## Installation
 
