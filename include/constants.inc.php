@@ -185,6 +185,13 @@ define('AC_GUIDES_PATH', $_base_path . 'documentation/');
 /* relative uri */
 $_rel_url = '/'.implode('/', array_slice($url_parts, count($url_parts) - $dir_deep-1));
 
+/**
+ * Max document size in KB, prevents memory overload */
 if (!defined('AC_VALIDATION_MAX_SIZE')) {
     define('AC_VALIDATION_MAX_SIZE', 128*1024);
+}
+
+/** Customizable html preview size, in reports */
+if (!defined('DISPLAY_PREVIEW_HTML_LENGTH')) {
+    define('DISPLAY_PREVIEW_HTML_LENGTH', 100);
 }
