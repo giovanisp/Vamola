@@ -18,5 +18,3 @@ include(AC_INCLUDE_PATH.'header.inc.php');
 
 // display footer
 include(AC_INCLUDE_PATH.'footer.inc.php');
-
-?>

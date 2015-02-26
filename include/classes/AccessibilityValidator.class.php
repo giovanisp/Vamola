@@ -19,17 +19,23 @@
 * @author	Cindy Qi Li
 * @package checker
 */
-if (!defined("AC_INCLUDE_PATH")) die("Error: AC_INCLUDE_PATH is not defined.");
+if (!defined('AC_INCLUDE_PATH')) {
+    die('Error: AC_INCLUDE_PATH is not defined.');
+}
 
-include (AC_INCLUDE_PATH . "lib/simple_html_dom.php");
+include_once (AC_INCLUDE_PATH . "lib/simple_html_dom.php");
 include_once (AC_INCLUDE_PATH . "classes/BasicChecks.class.php");
 include_once (AC_INCLUDE_PATH . "classes/BasicFunctions.class.php");
 include_once (AC_INCLUDE_PATH . "classes/CheckFuncUtility.class.php");
 include_once (AC_INCLUDE_PATH . "classes/DAO/ChecksDAO.class.php");
 
-define("SUCCESS_RESULT", "success");
-define("FAIL_RESULT", "fail");
-define("DISPLAY_PREVIEW_HTML_LENGTH", 100);
+define('SUCCESS_RESULT', 'success');
+define('FAIL_RESULT', 'fail');
+
+/** Brought to config.inc.php */
+if (!defined('DISPLAY_PREVIEW_HTML_LENGTH')) {
+    define('DISPLAY_PREVIEW_HTML_LENGTH', 100);
+}
 
 class AccessibilityValidator {
 
@@ -79,17 +85,20 @@ class AccessibilityValidator {
 		// dom of the content to be validated
 		$this->content_dom = $this->get_simple_html_dom($this->validate_content);
 		
+        if (strlen($this->validate_content) > AC_VALIDATION_MAX_SIZE) {
+
+            return false;
+        }
+
 		// prepare gobal vars used in BasicFunctions.class.php to fasten the validation
 		$this->prepare_global_vars();
 		
 		// set arrays of check_id, prerequisite check_id, next check_id
 		$this->prepare_check_arrays($this->guidelines);
-
-		$this->validate_element($this->content_dom->find('html'));
-
+        $this->validate_element($this->content_dom->find('html'));
 		$this->finalize();
 
-		// end of validation process
+        return true;
 	}
 	
 	/** private
@@ -107,12 +116,9 @@ class AccessibilityValidator {
 		// find base href, used to check image size
 		$all_base_elements = $this->content_dom->find("base");
 
-		if (is_array($all_base_elements))
-		{
-			foreach ($all_base_elements as $base)
-			{
-				if (isset($base->attr['href']))
-				{
+		if (is_array($all_base_elements)) {
+			foreach ($all_base_elements as $base) {
+				if (isset($base->attr['href'])) {
 					$base_href = $base->attr['href'];
 					break;
 				}
@@ -122,11 +128,10 @@ class AccessibilityValidator {
 		// set all check functions
 		$checksDAO = new ChecksDAO();
 		$rows = $checksDAO->getAllOpenChecks();
-		
-		if (is_array($rows))
-		{
-			foreach ($rows as $row)
-				$this->check_func_array[$row['check_id']] = CheckFuncUtility::convertCode($row['func']);
+		if (is_array($rows)) {
+			foreach ($rows as $row) {
+                $this->check_func_array[$row['check_id']] = CheckFuncUtility::convertCode($row['func']);
+            }
 		}
 	}
 	
@@ -138,20 +143,17 @@ class AccessibilityValidator {
 	 */
 	private function get_simple_html_dom($content)
 	{
-		global $msg;
-
+//		global $msg;
 		$dom = str_get_dom($content);
-
-		if (count($dom->find('html')) == 0)
-		{
+		if (count($dom->find('html')) == 0) {
 			$complete_html = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'.
 			                 '<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">'.
 			                 $content.
 			                 '</html>';
 			$this->col_offset = 175;  // The number of extra characters that are added onto the first line.
-
 			$dom = str_get_dom($complete_html);
 		}
+
 		return $dom;
 	}
 	
@@ -194,50 +196,46 @@ class AccessibilityValidator {
 	 */
 	private function prepare_check_arrays($guidelines)
 	{
-		if (!is_array($guidelines))
-			return false;
-		// validation process
-		else  
-		{
+		if (!is_array($guidelines)) {
+            return false;
+        } else {
+            // validation process
 			$checksDAO = new ChecksDAO();
 			
 			// generate array of "all element"
 			$rows = $checksDAO->getOpenChecksForAllByGuidelineIDs($guidelines);
 			
 			$count = 0;
-			if (is_array($rows))
-			{
-				foreach ($rows as $id => $row)
-					$this->check_for_all_elements_array[$count++] = $row["check_id"];
+			if (is_array($rows)) {
+				foreach ($rows as $row) {
+                    $this->check_for_all_elements_array[$count++] = $row['check_id'];
+                }
 			}
 			
 			// generate array of check_id
 			$rows = $checksDAO->getOpenChecksNotForAllByGuidelineIDs($guidelines);
-
-			if (is_array($rows))
-			{
-				foreach ($rows as $id => $row)
-				{
-					if ($row["html_tag"] <> $prev_html_tag && $prev_html_tag <> "") $count = 0;
-					
-					$this->check_for_tag_array[$row["html_tag"]][$count++] = $row["check_id"];
-					
-					$prev_html_tag = $row["html_tag"];
+            $prev_html_tag = null;
+			if (is_array($rows)) {
+				foreach ($rows as $row) {
+					if ($row['html_tag'] <> $prev_html_tag && $prev_html_tag <> '') {
+                        $count = 0;
+                    }
+					$this->check_for_tag_array[$row['html_tag']][$count++] = $row['check_id'];
+					$prev_html_tag = $row['html_tag'];
 				}
 			}
 			
 			// generate array of prerequisite check_ids
 			$rows = $checksDAO->getOpenPreChecksByGuidelineIDs($guidelines);
-
-			if (is_array($rows))
-			{
-				foreach ($rows as $id => $row)
-				{
-					if ($row["check_id"] <> $prev_check_id)  $prerequisite_check_array[$row["check_id"]] = array();
-					
-					array_push($prerequisite_check_array[$row["check_id"]], $row["prerequisite_check_id"]);
-					
-					$prev_check_id = $row["check_id"];
+            $prev_check_id = null;
+            $prerequisite_check_array = array();
+			if (is_array($rows)) {
+				foreach ($rows as $row) {
+					if ($row['check_id'] <> $prev_check_id) {
+                        $prerequisite_check_array[$row['check_id']] = array();
+                    }
+					array_push($prerequisite_check_array[$row['check_id']], $row['prerequisite_check_id']);
+					$prev_check_id = $row['check_id'];
 				}
 			}
 			$this->prerequisite_check_array = $prerequisite_check_array;
@@ -252,36 +250,28 @@ class AccessibilityValidator {
 	 */
 	private function validate_element($element_array)
 	{
-		foreach($element_array as $e)
-		{
+		foreach($element_array as $e) {
 			// generate array of checks for the html tag of this element
-			if (is_array($this->check_for_tag_array[$e->tag]))
-				$check_array[$e->tag] = array_merge($this->check_for_tag_array[$e->tag], $this->check_for_all_elements_array);
-			else
-				$check_array[$e->tag] = $this->check_for_all_elements_array;
-				
-			foreach ($check_array[$e->tag] as $check_id)
-			{
+			if (is_array($this->check_for_tag_array[$e->tag])) {
+                $check_array[$e->tag] = array_merge($this->check_for_tag_array[$e->tag], $this->check_for_all_elements_array);
+            } else {
+                $check_array[$e->tag] = $this->check_for_all_elements_array;
+            }
+
+			foreach ($check_array[$e->tag] as $check_id) {
 				// check prerequisite ids first, if fails, report failure and don't need to proceed with $check_id
 				$prerequisite_failed = false;
-
-				if (is_array($this->prerequisite_check_array[$check_id]))
-				{
-					foreach ($this->prerequisite_check_array[$check_id] as $prerequisite_check_id)
-					{
+				if (is_array($this->prerequisite_check_array[$check_id])) {
+					foreach ($this->prerequisite_check_array[$check_id] as $prerequisite_check_id) {
 						$check_result = $this->check($e, $prerequisite_check_id);
-						
-						if ($check_result == FAIL_RESULT)
-						{
+						if (FAIL_RESULT == $check_result) {
 							$prerequisite_failed = true;
 							break;
 						}
 					}
 				}
-
 				// if prerequisite check passes, proceed with current check_id
-				if (!$prerequisite_failed)
-				{
+				if (!$prerequisite_failed) {
 					$check_result = $this->check($e, $check_id);
 				}
 			}
@@ -301,33 +291,33 @@ class AccessibilityValidator {
 	 */
 	private function check($e, $check_id)
 	{
-		global $msg, $base_href, $tag_size;
+//        global $msg, $base_href, $tag_size;
+        global $msg, $base_href;
+
 		// don't check the lines before $line_offset
-		if ($e->linenumber <= $this->line_offset) return;
+		if ($e->linenumber <= $this->line_offset) {
+
+            return false;
+        }
 
 		if ($e->linenumber == 1 && $this->col_offset > 0) {
 		    $col_number = $e->colnumber - $this->col_offset;
 		} else {
 		    $col_number = $e->colnumber;
 		}
-		
 		$line_number = $e->linenumber-$this->line_offset;
-		
 		$result = $this->get_check_result($line_number, $col_number, $check_id);
 
 		// has not been checked
-		if (!$result)
-		{
+		if (!$result) {
 			$check_result = eval($this->check_func_array[$check_id]);
 			
 			//CSS code variable
 			$css_code = BasicChecks::getCssOutput();
-								
-			$checksDAO = new ChecksDAO();
+            $checksDAO = new ChecksDAO();
 			$row = $checksDAO->getCheckByID($check_id);
-			
-			if (is_null($check_result))
-			{ // when $check_result is not true/false, must be something wrong with the check function.
+			if (is_null($check_result)) {
+			  // when $check_result is not true/false, must be something wrong with the check function.
 			  // show warning message and skip this check
 				$msg->addError(array('CHECK_FUNC', $row['html_tag'].': '._AC($row['name'])));
 				
@@ -335,8 +325,7 @@ class AccessibilityValidator {
 				$check_result = true;
 			}
 			
-			if ($check_result===true)  // success
-			{
+			if ($check_result===true) {
 				$result = SUCCESS_RESULT;
 				
 				//MB 
@@ -345,14 +334,11 @@ class AccessibilityValidator {
 					$this->num_success[$check_id]++;
 				else 
 					$this->num_success[$check_id]=1;
-			} 
-			else
-			{
+			} else {
 				$result = FAIL_RESULT;
 			}
 			
-			if ($result == FAIL_RESULT)
-			{
+			if ($result == FAIL_RESULT) {
 				$preview_html = $e->outertext;
 				if (strlen($preview_html) > DISPLAY_PREVIEW_HTML_LENGTH) 
 					$html_code = substr($preview_html, 0, DISPLAY_PREVIEW_HTML_LENGTH) . " ...";
@@ -360,6 +346,8 @@ class AccessibilityValidator {
 					$html_code = $preview_html;
 
 				// find out preview images for validation on <img>
+                $image = null;
+                $image_alt = null;
 				if (strtolower(trim($row['html_tag'])) == 'img')
 				{
 					$image = BasicChecks::getFile($e->attr['src'], $base_href, $this->uri);
@@ -378,7 +366,7 @@ class AccessibilityValidator {
 				// If its a duplicate ID, switch the line number from the element line (body)
 				// to the line where the duplicate ID appears.
 				global $has_duplicate_attribute;
-                if(is_array($has_duplicate_attribute)){
+                if(is_array($has_duplicate_attribute)) {
                         $line_number = $has_duplicate_attribute[0];
                         $html_code .= "(".$has_duplicate_attribute[1].")";
 				}
@@ -408,10 +396,11 @@ class AccessibilityValidator {
 	 */
 	private function get_check_result($line_number, $col_number, $check_id)
 	{
-		foreach($this->result as $one_result)
-		{
-			if ($one_result["line_number"] == $line_number && $one_result["col_number"] == $col_number && $one_result["check_id"] == $check_id)
-				return $one_result["result"];
+		foreach($this->result as $one_result) {
+			if ($one_result["line_number"] == $line_number && $one_result["col_number"] == $col_number && $one_result["check_id"] == $check_id) {
+
+                return $one_result["result"];
+            }
 		}
 		
 		return false;
@@ -439,25 +428,27 @@ class AccessibilityValidator {
 	 * array ([0] => 7, [1] => 8)
 	 * delimiter: ,
 	 * is converted to string "7, 8"
-	 */
+	 *
 	private function convert_array_to_string($in_array, $delimiter)
 	{
 		$count = 0;
-		if (is_array($in_array))
-		{
-			foreach ($in_array as $element)
-			{
-				if ($count == 0) $str = $element;
-				else $str .= $delimiter . $element;
-				
+        $str = null;
+		if (is_array($in_array)) {
+			foreach ($in_array as $element) {
+				if ($count == 0) {
+                    $str = $element;
+                } else {
+                    $str .= $delimiter . $element;
+                }
 				$count++;
 			}
+
 			return $str;
 		}
-		else
-			return false;
+
+        return false;
 	}
-	
+
 	/**
 	 * private 
 	 * generate class value: array of error results, number of errors
@@ -510,10 +501,12 @@ class AccessibilityValidator {
 	public function getResultsByCheckID($check_id)
 	{
 		$rtn = array();
-		foreach ($this->result as $oneResult)
-			if ($oneResult["check_id"] == $check_id)
-				array_push($rtn, array("line_number"=>$oneResult["line_number"], "col_number"=>$oneResult["col_number"], "check_id"=>$oneResult["check_id"], "result"=>$oneResult["result"]));
-	
+		foreach ($this->result as $oneResult) {
+            if ($oneResult["check_id"] == $check_id) {
+                array_push($rtn, array("line_number"=>$oneResult["line_number"], "col_number"=>$oneResult["col_number"], "check_id"=>$oneResult["check_id"], "result"=>$oneResult["result"]));
+            }
+        }
+
 		return $rtn;
 	}
 
@@ -524,11 +517,12 @@ class AccessibilityValidator {
 	public function getResultsByLine($line_number)
 	{
 		$rtn = array();
-		foreach ($this->result as $oneResult)
-			if ($oneResult["line_number"] == $line_number)
-				array_push($rtn, array("line_number"=>$oneResult["line_number"], "col_number"=>$oneResult["col_number"], "check_id"=>$oneResult["check_id"], "result"=>$oneResult["result"]));
-	
+		foreach ($this->result as $oneResult) {
+            if ($oneResult["line_number"] == $line_number){
+                array_push($rtn, array("line_number"=>$oneResult["line_number"], "col_number"=>$oneResult["col_number"], "check_id"=>$oneResult["check_id"], "result"=>$oneResult["result"]));
+            }
+        }
+
 		return $rtn;
 	}
 }
-?>

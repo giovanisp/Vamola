@@ -45,7 +45,11 @@ $user_link_url = '';
                 <img src="<?php echo AC_BASE_HREF; ?>images/feedback.gif" alt="<?php echo _AC("feedback") ?>" />
                 <?php echo _AC("congrats_no_known");?>
             </span>
-        
+
+            <p class="center">
+                <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://validatore.it" data-text="Ho appena utilizzato Vamolà, validatore e monitor per l'accessibilità" data-lang="it" data-size="large" data-hashtags="a11y">Condividi su Twitter</a>
+                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+            </p>
 <?php endif; ?>
         </div>
 
