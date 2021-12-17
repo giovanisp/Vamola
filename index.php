@@ -9,7 +9,7 @@
 /* modify it under the terms of the GNU General Public License          */
 /* as published by the Free Software Foundation.                        */
 /************************************************************************/
-// $Id$
+// $Id$ 
 
 define('AC_INCLUDE_PATH', 'include/');
 
